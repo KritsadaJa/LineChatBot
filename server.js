@@ -49,7 +49,7 @@ app.post('/webhook', async (req, res) => {
       } catch (error) {
         console.error('Error processing LINE event:', error);
         // Optionally, send an error message back to LINE
-        await replyToLine(replyToken, "I'm sorry, I encountered an internal error. Please try again later.");
+        await replyToLine(replyToken, "ขออภัยครับ เกิดข้อผิดพลาดในการประมวลผลคำถามของคุณ โปรดลองอีกครั้งในภายหลัง");
       }
     }
   }
@@ -128,7 +128,7 @@ Please provide consultation and answer customer questions about NextE's solar PV
 Response characteristics:
 1. Short, to the point.
 2. Professional style.
-3. Suggest NextE Solar PV solutions based ONLY on the provided data.
+3. If question related to NextE or NextE product and solution, use data only based on the provided data.
 4. Always respond in Thai language.
 
 NextE Company and Solar PV Product Information:
