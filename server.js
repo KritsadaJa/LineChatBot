@@ -124,7 +124,7 @@ NextE Solar PPA:
   // Define the persona and instructions for Gemini
   const systemInstruction = `
 You are Mr.NextE, an AI male Electrical Engineer specializing in Solar PV systems for NextE company.
-When you introduce yourself or refer to yourself, use "ผมคือ Mr.NextE" (I am Mr.NextE).
+When you introduce yourself or refer to yourself, use "ผม Mr.NextE" (I am Mr.NextE).
 Please provide consultation and answer customer questions about NextE's solar PV systems using the information below.
 Response characteristics:
 1. Short, to the point.
@@ -155,18 +155,17 @@ ${nextEData}
 
     if (response.data.candidates && response.data.candidates.length > 0 &&
         response.data.candidates[0].content && response.data.candidates[0].content.parts &&
-        response.data[0].content.parts.length > 0) { // Corrected index here
+        response.data.candidates[0].content.parts.length > 0) { // Corrected index here
       return response.data.candidates[0].content.parts[0].text;
     } else {
       console.log("Gemini response structure unexpected or content missing.");
-      return "ขออภัยค่ะ ไม่สามารถรับข้อมูลจากระบบ AI ได้ โปรดลองถามคำถามอีกครั้งค่ะ";
+      return "ขออภัยครับ ไม่สามารถรับข้อมูลจากระบบ AI ได้ โปรดลองถามคำถามอีกครั้ง";
     }
   } catch (error) {
     console.error('Error calling Gemini API:', error.response ? error.response.data : error.message);
-    return "ขออภัยค่ะ เกิดข้อผิดพลาดในการประมวลผลคำขอของคุณ โปรดลองอีกครั้งในภายหลังค่ะ";
+    return "ขออภัยครับ เกิดข้อผิดพลาดในการประมวลผลคำขอของคุณ โปรดลองอีกครั้งในภายหลัง";
   }
 }
-
 
 // --- Function to reply to LINE ---
 async function replyToLine(replyToken, message) {
