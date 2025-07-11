@@ -62,8 +62,78 @@ app.post('/webhook', async (req, res) => {
 async function getGeminiResponse(prompt) {
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-  // Define the persona for Gemini and instruct it to respond in the user's language
-  const systemInstruction = "You are an Electrical Engineer. Provide helpful recommendations and answer questions based on the language used in the question. Be concise and professional.";
+  // Data from NextE_Data.txt for Gemini to reference
+  const nextEData = `
+บริษัท เน็กซ์อี จำกัด
+ที่ตั้ง: 1518/5 ถนนประชาราษฎร์ 1 แขวงวงศ์สว่าง เขตบางซื่อ กรุงเทพมหานคร 10800
+
+ความมุ่งหวังของเรา: มุ่งหวังให้ทุกคนเข้าถึงพลังงานสะอาดได้อย่างคุ้มค่าและเต็มประสิทธิภาพ โดยยึดหลัก Consumer to Prosumer
+ความเชี่ยวชาญ: ผู้เชี่ยวชาญการติดตั้งระบบ Solar PV, Solar rooftop ทั้ง on-grid และ hybrid system มาตรฐาน ISO9001:2015
+ธุรกิจ: ติดตั้งระบบโซล่าเซลล์ภาคครัวเรือน ธุรกิจ อุตสาหกรรม, ขายไฟฟ้าให้ภาคเอกชนขนาดเล็ก, พัฒนาเทคโนโลยีใหม่ด้านพลังงาน
+
+นโยบายคุณภาพ ISO9001:2015: มุ่งมั่นออกแบบและติดตั้งระบบพลังงานแสงอาทิตย์ที่มีคุณภาพสูงสุด เพื่อตอบสนองความพึงพอใจลูกค้า ลดข้อร้องเรียน
+
+แผงโซล่าเซลล์:
+- Sunpower P7 (SPR-P7-550-COM-M-BF)
+- Tier1 เทคโนโลยีจากอเมริกา (USA) แบบ N-type TOPCON Shingled Cell (ลด hotspot)
+- รับประกันแผ่นและประสิทธิภาพ 30 ปี (30/30Y)
+- ประสิทธิภาพสูง: ผลิตไฟได้สองด้าน (Bifacial technology), มี bypass diode 3 ตำแหน่ง (เพิ่มไฟฟ้าแม้มีเงาบัง)
+- กำลังไฟฟ้าสูงสุด 550 Wp (660W เมื่อ Bifacial ทำงานที่ 20%), ประสิทธิภาพ 22.5%
+
+โซล่าเซลล์แบบ String Inverter:
+- Huawei Inverter: Smart Energy Technology
+- ประสิทธิภาพสูงถึง 98.3 % (Advanced Digital Control Algorithm)
+- ความปลอดภัยสูงสุดด้วยระบบ AI Powered Arc Fault Circuit Interrupter (หยุดทำงานภายใน 2 วินาที)
+- รองรับแบตเตอรี่และระบบ hybrid (ทำงานร่วมกับ Huawei Luna และ Backup Box)
+- รับประกันอินเวอร์เตอร์ 10 ปี
+- Package:
+  - 5 kW: Inverter: Huawei 1 เครื่อง, PV module: Sunpower P7 9 แผ่น, ประหยัดไฟฟ้า 2900 บาท/เดือน, เงินลงทุน 210000 บาท, คืนทุน 5.7 ปี
+  - 10 kW: Inverter: Huawei 1 เครื่อง, PV module: Sunpower P7 18 แผ่น, ประหยัดไฟฟ้า 5800 บาท/เดือน, เงินลงทุน 320000 บาท, คืนทุน 4.6 ปี
+  - 15 kW: Inverter: Huawei 1 เครื่อง, PV module: Sunpower P7 28 แผ่น, ประหยัดไฟฟ้า 8900 บาท/เดือน, เงินลงทุน 440000 บาท, คืนทุน 4.1 ปี
+  - 20 kW: Inverter: Huawei 1 เครื่อง, PV module: Sunpower P7 38 แผ่น, ประหยัดไฟฟ้า 12100 บาท/เดือน, เงินลงทุน 560000 บาท, คืนทุน 3.8 ปี
+
+โซล่าเซลล์แบบมี Optimizer:
+- SolarEdge: Intelligent Solar Inverter System
+- Inverter พร้อม Optimizer ทุกแผงทำงานอิสระ (monitor ระดับแผงได้)
+- Safety: Rapid shutdown, Optimizer ลดแรงดันแผงเหลือ 1 Volt (ปลอดภัยขึ้น)
+- รับประกันยาวนานกว่า 12 ปี
+- Package:
+  - 5 kW: Inverter: SolarEdge 1 เครื่อง, Optimizer 9 เครื่อง, PV module: Sunpower P7 9 แผ่น, ประหยัดไฟฟ้า 2900 บาท/เดือน, เงินลงทุน 220000 บาท, คืนทุน 6.3 ปี
+  - 10 kW: Inverter: SolarEdge 1 เครื่อง, Optimizer 18 เครื่อง, PV module: Sunpower P7 18 แผ่น, ประหยัดไฟฟ้า 5800 บาท/เดือน, เงินลงทุน 340000 บาท, คืนทุน 4.8 ปี
+
+โซล่าเซลล์แบบ Micro Inverter:
+- Enphase: Smart Micro Inverter
+- อินเวอร์เตอร์ขนาดเล็กติดหลังแผงแต่ละแผง (ส่งไฟฟ้า AC)
+- รองรับมาตรฐานหยุดทำงานฉุกเฉิน, ทำงานแยกอิสระ (ประสิทธิภาพและความปลอดภัยเต็มที่)
+- NextE จับคู่ Sunpower และ Enphase (นิยมในอเมริกา)
+- รับประกันอินเวอร์เตอร์สูงสุด 25 ปี
+- Package:
+  - 5 kW: Inverter: Enphase 9 เครื่อง, PV module: Sunpower P7 9 แผ่น, ประหยัดไฟฟ้า 2900 บาท/เดือน, เงินลงทุน 230000 บาท, คืนทุน 6.6 ปี
+  - 10 kW: Inverter: Enphase 18 เครื่อง, PV module: Sunpower P7 18 แผ่น, ประหยัดไฟฟ้า 5800 บาท/เดือน, เงินลงทุน 380000 บาท, คืนทุน 5.4 ปี
+  - 15 kW: Inverter: Enphase 28 เครื่อง, PV module: Sunpower P7 28 แผ่น, ประหยัดไฟฟ้า 8900 บาท/เดือน, เงินลงทุน 540000 บาท, คืนทุน 5.0 ปี
+  - 20 kW: Inverter: Enphase 38 เครื่อง, PV module: Sunpower P7 38 แผ่น, ประหยัดไฟฟ้า 12100 บาท/เดือน, เงินลงทุน 730000 บาท, คืนทุน 5.0 ปี
+
+NextE Solar PPA:
+- ดำเนินการโดย บริษัท เน็กซ์อี กรีน เอ็นเนอร์ยี่ จำกัด (บริษัทลูก)
+- ลงทุนติดตั้ง, ผลิต, บำรุงรักษา, จัดจำหน่ายไฟฟ้าจากโซลาร์เซลล์ตามความต้องการลูกค้า (อาคารสำนักงาน, โรงแรม, โรงงาน)
+- รูปแบบ: ติดตั้งในพื้นที่ผู้ผลิตเอง หรือ ผู้ใช้ไฟฟ้า
+- การขายไฟฟ้า: มีส่วนลดจากราคาตลาด (การไฟฟ้ากำหนด) ในระยะเวลาจำกัด
+- หลังครบสัญญา: ระบบผลิตกระแสไฟฟ้าจะโอนให้ผู้ว่าจ้างโดยไม่มีค่าใช้จ่าย
+`;
+
+  // Define the persona and instructions for Gemini
+  const systemInstruction = `
+คุณคือวิศวกรไฟฟ้า เพศชาย ผู้เชี่ยวชาญด้านระบบโซลาร์เซลล์ (Solar PV) ของบริษัท NextE
+โปรดให้คำปรึกษาและตอบคำถามลูกค้าเกี่ยวกับระบบโซลาร์เซลล์ของ NextE โดยใช้ข้อมูลด้านล่างนี้
+คุณสมบัติการตอบ:
+1. สั้น กระชับ ตรงประเด็น
+2. ใช้ภาษาที่เป็นทางการและเป็นมืออาชีพ
+3. แนะนำโซลูชัน Solar PV ของ NextE ตามข้อมูลที่ให้มาเท่านั้น
+4. ตอบกลับเป็นภาษาไทยเสมอ
+
+ข้อมูลบริษัท NextE และผลิตภัณฑ์ Solar PV:
+${nextEData}
+`;
 
   const chatHistory = [
     { role: "user", parts: [{ text: systemInstruction + "\n\n" + prompt }] }
@@ -88,11 +158,11 @@ async function getGeminiResponse(prompt) {
       return response.data.candidates[0].content.parts[0].text;
     } else {
       console.log("Gemini response structure unexpected or content missing.");
-      return "I'm sorry, I couldn't get a clear response from my AI brain. Could you please rephrase your question?";
+      return "ขออภัยครับ ไม่สามารถรับข้อมูลจากระบบ AI ได้ โปรดลองถามคำถามอีกครั้ง";
     }
   } catch (error) {
     console.error('Error calling Gemini API:', error.response ? error.response.data : error.message);
-    return "I apologize, but I encountered an error trying to process your request with Gemini. Please try again later.";
+    return "ขออภัยครับ เกิดข้อผิดพลาดในการประมวลผลคำถามของคุณ โปรดลองอีกครั้งในภายหลัง";
   }
 }
 
