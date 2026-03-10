@@ -114,7 +114,7 @@ NextE Solar PPA:
       { role: "system", content: systemInstruction + "\n\nContext Data:\n" + nextEData },
       { role: "user", content: prompt }
     ],
-    max_tokens: 600, // Slightly increased for more detailed engineering answers
+    max_tokens: 6000, // Slightly increased for more detailed engineering answers
     temperature: 0.4  // Lowered slightly for higher factual accuracy
   };
 
