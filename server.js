@@ -1,68 +1,47 @@
 // --- Required Modules ---
 const express = require('express');
-const axios = require('axios'); // Used for making HTTP requests (to LINE and Gemini)
+const axios = require('axios');
 
-// --- Initialize Express App ---
 const app = express();
-
-// --- Middleware to parse JSON requests ---
 app.use(express.json());
 
-// --- Configuration (Environment Variables) ---
-// IMPORTANT: Store these in your Glitch project's .env file, NOT directly in this code.
-// Go to your Glitch project, click 'Tools' -> 'Environment' to set these.
+// --- Configuration ---
+// Make sure to add TYPHOON_API_KEY to your .env file
 const LINE_CHANNEL_ACCESS_TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 const LINE_CHANNEL_SECRET = process.env.LINE_CHANNEL_SECRET;
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const TYPHOON_API_KEY = process.env.TYPHOON_API_KEY;
+const APP_URL = process.env.APP_URL; // e.g., https://your-app.onrender.com
 
-// --- Root Endpoint (for health check or simple message) ---
+// --- Root Endpoint ---
 app.get('/', (req, res) => {
-  res.status(200).send('LINE Chatbot Webhook is running!');
+  res.status(200).send('Mr.NextE (Typhoon Edition) is Online!');
 });
 
 // --- LINE Webhook Endpoint ---
 app.post('/webhook', async (req, res) => {
-  // Log the incoming request for debugging
-  console.log('LINE Webhook Event:', JSON.stringify(req.body, null, 2));
-
-  // Verify the request signature (optional but recommended for security)
-  // For simplicity, we're skipping signature verification here, but for production,
-  // you should implement it using crypto and LINE_CHANNEL_SECRET.
-
-  // Iterate over each event in the request
   for (const event of req.body.events) {
-    // Check if the event is a message and if it's a text message
     if (event.type === 'message' && event.message.type === 'text') {
       const userMessage = event.message.text;
       const replyToken = event.replyToken;
 
-      console.log('User Message:', userMessage);
-      console.log('Reply Token:', replyToken);
-
       try {
-        // Get response from Gemini
-        const geminiResponse = await getGeminiResponse(userMessage);
-
-        // Reply to LINE user
-        await replyToLine(replyToken, geminiResponse);
-
+        // Updated to Typhoon
+        const typhoonResponse = await getTyphoonResponse(userMessage);
+        await replyToLine(replyToken, typhoonResponse);
       } catch (error) {
-        console.error('Error processing LINE event:', error);
-        // Optionally, send an error message back to LINE
-        await replyToLine(replyToken, "ขออภัยครับ เกิดข้อผิดพลาดในการประมวลผลคำถามของคุณ โปรดลองอีกครั้งในภายหลัง");
+        console.error('Error:', error);
+        await replyToLine(replyToken, "ขออภัยครับ ผม Mr.NextE เกิดข้อผิดพลาดทางเทคนิคเล็กน้อย โปรดลองอีกครั้งนะครับ");
       }
     }
   }
-
-  // Always return a 200 OK status to LINE as quickly as possible
   res.status(200).send('OK');
 });
 
-// --- Function to interact with Gemini API ---
-async function getGeminiResponse(prompt) {
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-  // Data from NextE_Data.txt for Gemini to reference
+// --- Function to interact with Typhoon API ---
+async function getTyphoonResponse(prompt) {
+  // Typhoon uses the OpenAI-compatible endpoint
+  const apiUrl = "https://api.opentyphoon.ai/v1/chat/completions";
+  
   const nextEData = `
 บริษัท เน็กซ์อี จำกัด
 ที่ตั้ง: 1518/5 ถนนประชาราษฎร์ 1 แขวงวงศ์สว่าง เขตบางซื่อ กรุงเทพมหานคร 10800
@@ -121,81 +100,63 @@ NextE Solar PPA:
 - หลังครบสัญญา: ระบบผลิตกระแสไฟฟ้าจะโอนให้ผู้ว่าจ้างโดยไม่มีค่าใช้จ่าย
 `;
 
-  // Define the persona and instructions for Gemini
-  const systemInstruction = `
-You are Mr.NextE, an AI male Electrical Engineer specializing in Solar PV systems for NextE company.
-When you introduce yourself or refer to yourself, use "ผม Mr.NextE" (I am Mr.NextE).
-Please provide consultation and answer customer questions about NextE's solar PV systems using the information below.
-Response characteristics:
-1. Short, to the point.
-2. Professional style.
-3. If the question is related to NextE or NextE products and solutions, use data ONLY based on the provided data.
-4. Always respond in Thai language.
-
-NextE Company and Solar PV Product Information:
-${nextEData}
-`;
-
-  const chatHistory = [
-    { role: "user", parts: [{ text: systemInstruction + "\n\n" + prompt }] }
-  ];
+  const systemInstruction = `คุณคือ Mr.NextE วิศวกรไฟฟ้าชายผู้เชี่ยวชาญระบบ Solar PV ของบริษัท NextE
+  ลักษณะการตอบกลับ:
+  1. พูดจาสุภาพ ใช้คำแทนตัวว่า "ผม" และลงท้ายว่า "ครับ" เสมอ
+  2. ตอบให้ตรงประเด็น สั้น กระชับ แบบวิศวกร
+  3. ใช้ข้อมูลจากบริบทที่ให้มาเท่านั้นเกี่ยวกับสินค้าและบริการของ NextE
+  4. ตอบเป็นภาษาไทยที่ถูกต้องและเป็นมืออาชีพ`;
 
   const payload = {
-    contents: chatHistory
+    // Model updated to the requested version
+    model: "typhoon-v2.5-30b-a3b-instruct", 
+    messages: [
+      { role: "system", content: systemInstruction + "\n\nContext Data:\n" + nextEData },
+      { role: "user", content: prompt }
+    ],
+    max_tokens: 600, // Slightly increased for more detailed engineering answers
+    temperature: 0.4  // Lowered slightly for higher factual accuracy
   };
 
   try {
     const response = await axios.post(apiUrl, payload, {
       headers: {
+        'Authorization': `Bearer ${TYPHOON_API_KEY}`,
         'Content-Type': 'application/json'
       }
     });
 
-    console.log('Gemini API Response:', JSON.stringify(response.data, null, 2));
-
-    if (response.data.candidates && response.data.candidates.length > 0 &&
-        response.data.candidates[0].content && response.data.candidates[0].content.parts &&
-        response.data.candidates[0].content.parts.length > 0) { // Corrected index here
-      return response.data.candidates[0].content.parts[0].text;
-    } else {
-      console.log("Gemini response structure unexpected or content missing.");
-      return "ขออภัยครับ ไม่สามารถรับข้อมูลจากระบบ AI ได้ โปรดลองถามคำถามอีกครั้ง";
-    }
+    return response.data.choices[0].message.content;
   } catch (error) {
-    console.error('Error calling Gemini API:', error.response ? error.response.data : error.message);
-    return "ขออภัยครับ เกิดข้อผิดพลาดในการประมวลผลคำขอของคุณ โปรดลองอีกครั้งในภายหลัง";
+    console.error('Typhoon API Error:', error.response ? error.response.data : error.message);
+    throw error;
   }
 }
 
 // --- Function to reply to LINE ---
 async function replyToLine(replyToken, message) {
   const lineReplyUrl = "https://api.line.me/v2/bot/message/reply";
-
-  const headers = {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}`
-  };
-
-  const payload = {
+  await axios.post(lineReplyUrl, {
     replyToken: replyToken,
-    messages: [
-      {
-        type: "text",
-        text: message
-      }
-    ]
-  };
-
-  try {
-    const response = await axios.post(lineReplyUrl, payload, { headers });
-    console.log('LINE Reply Response:', response.data);
-  } catch (error) {
-    console.error('Error replying to LINE:', error.response ? error.response.data : error.message);
-  }
+    messages: [{ type: "text", text: message }]
+  }, {
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}`
+    }
+  });
 }
 
 // --- Start the server ---
-const port = process.env.PORT || 3000; // Glitch automatically sets the PORT environment variable
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
+  
+  // --- Wake-up Signal (Self-Ping) ---
+  if (APP_URL) {
+    console.log("Self-pinging active to prevent sleep.");
+    setInterval(() => {
+      axios.get(APP_URL).catch((err) => console.log("Self-ping failed:", err.message));
+    }, 10 * 60 * 1000); // Pings every 10 minutes
+  }
 });
