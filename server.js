@@ -66,10 +66,14 @@ async function getTyphoonResponse(prompt) {
 - รองรับแบตเตอรี่และระบบ hybrid (ทำงานร่วมกับ Huawei Luna และ Backup Box)
 - รับประกันอินเวอร์เตอร์ 10 ปี
 - Package:
-  - 5 kW: Inverter: Huawei 1 เครื่อง, PV module: Sunpower P7 9 แผ่น, ประหยัดไฟฟ้า 2900 บาท/เดือน, เงินลงทุน 210000 บาท, คืนทุน 5.7 ปี
-  - 10 kW: Inverter: Huawei 1 เครื่อง, PV module: Sunpower P7 18 แผ่น, ประหยัดไฟฟ้า 5800 บาท/เดือน, เงินลงทุน 320000 บาท, คืนทุน 4.6 ปี
-  - 15 kW: Inverter: Huawei 1 เครื่อง, PV module: Sunpower P7 28 แผ่น, ประหยัดไฟฟ้า 8900 บาท/เดือน, เงินลงทุน 440000 บาท, คืนทุน 4.1 ปี
-  - 20 kW: Inverter: Huawei 1 เครื่อง, PV module: Sunpower P7 38 แผ่น, ประหยัดไฟฟ้า 12100 บาท/เดือน, เงินลงทุน 560000 บาท, คืนทุน 3.8 ปี
+  - 5 kW: Inverter: Huawei 1 เครื่อง, PV module: Sunpower P7 9 แผ่น, ประหยัดไฟฟ้า 2900 บาท/เดือน, เงินลงทุน 149000 บาท, คืนทุน 4.6 ปี
+  - 10 kW: Inverter: Huawei 1 เครื่อง, PV module: Sunpower P7 18 แผ่น, ประหยัดไฟฟ้า 5800 บาท/เดือน, เงินลงทุน 249000 บาท, คืนทุน 3.6 ปี
+  - 15 kW: Inverter: Huawei 1 เครื่อง, PV module: Sunpower P7 28 แผ่น, ประหยัดไฟฟ้า 8700 บาท/เดือน, เงินลงทุน 339000 บาท, คืนทุน 3.2 ปี
+  - 20 kW: Inverter: Huawei 1 เครื่อง, PV module: Sunpower P7 38 แผ่น, ประหยัดไฟฟ้า 11600 บาท/เดือน, เงินลงทุน 429000 บาท, คืนทุน 3.0 ปี
+  - 5 kW: Inverter: Huawei 1 เครื่อง, PV module: Jinko 8 แผ่น, ประหยัดไฟฟ้า 2900 บาท/เดือน, เงินลงทุน 13900 บาท, คืนทุน 4.3 ปี
+  - 10 kW: Inverter: Huawei 1 เครื่อง, PV module: Jinko 16 แผ่น, ประหยัดไฟฟ้า 5800 บาท/เดือน, เงินลงทุน 320000 บาท, คืนทุน 3.4 ปี
+  - 15 kW: Inverter: Huawei 1 เครื่อง, PV module: Jinko 24 แผ่น, ประหยัดไฟฟ้า 8700 บาท/เดือน, เงินลงทุน 440000 บาท, คืนทุน 3.2 ปี
+  - 20 kW: Inverter: Huawei 1 เครื่อง, PV module: Jinko 32 แผ่น, ประหยัดไฟฟ้า 11600 บาท/เดือน, เงินลงทุน 560000 บาท, คืนทุน 2.9 ปี
 
 โซล่าเซลล์แบบมี Optimizer:
 - SolarEdge: Intelligent Solar Inverter System
@@ -77,8 +81,12 @@ async function getTyphoonResponse(prompt) {
 - Safety: Rapid shutdown, Optimizer ลดแรงดันแผงเหลือ 1 Volt (ปลอดภัยขึ้น)
 - รับประกันยาวนานกว่า 12 ปี
 - Package:
-  - 5 kW: Inverter: SolarEdge 1 เครื่อง, Optimizer 9 เครื่อง, PV module: Sunpower P7 9 แผ่น, ประหยัดไฟฟ้า 2900 บาท/เดือน, เงินลงทุน 220000 บาท, คืนทุน 6.3 ปี
-  - 10 kW: Inverter: SolarEdge 1 เครื่อง, Optimizer 18 เครื่อง, PV module: Sunpower P7 18 แผ่น, ประหยัดไฟฟ้า 5800 บาท/เดือน, เงินลงทุน 340000 บาท, คืนทุน 4.8 ปี
+  - 5 kW: Inverter: SolarEdge 1 เครื่อง, Optimizer 9 เครื่อง, PV module: Sunpower P7 9 แผ่น, ประหยัดไฟฟ้า 2900 บาท/เดือน, เงินลงทุน 179000 บาท, คืนทุน 5.1 ปี
+  - 10 kW: Inverter: SolarEdge 1 เครื่อง, Optimizer 18 เครื่อง, PV module: Sunpower P7 18 แผ่น, ประหยัดไฟฟ้า 5800 บาท/เดือน, เงินลงทุน 279000 บาท, คืนทุน 4.0 ปี
+  - 5 kW: Inverter: SolarEdge 1 เครื่อง, Optimizer 8 เครื่อง, PV module: Jinko 8 แผ่น, ประหยัดไฟฟ้า 2900 บาท/เดือน, เงินลงทุน 169000 บาท, คืนทุน 4.8 ปี
+  - 10 kW: Inverter: SolarEdge 1 เครื่อง, Optimizer 16 เครื่อง, PV module: Jinko 16 แผ่น, ประหยัดไฟฟ้า 5800 บาท/เดือน, เงินลงทุน 259000 บาท, คืนทุน 3.7 ปี
+
+ปัจจุบันไม่อนุญาตให้ขายไฟเข้าระบบหรือ Net Metering
 
 โซล่าเซลล์แบบ Micro Inverter:
 - Enphase: Smart Micro Inverter
@@ -87,10 +95,14 @@ async function getTyphoonResponse(prompt) {
 - NextE จับคู่ Sunpower และ Enphase (นิยมในอเมริกา)
 - รับประกันอินเวอร์เตอร์สูงสุด 25 ปี
 - Package:
-  - 5 kW: Inverter: Enphase 9 เครื่อง, PV module: Sunpower P7 9 แผ่น, ประหยัดไฟฟ้า 2900 บาท/เดือน, เงินลงทุน 230000 บาท, คืนทุน 6.6 ปี
-  - 10 kW: Inverter: Enphase 18 เครื่อง, PV module: Sunpower P7 18 แผ่น, ประหยัดไฟฟ้า 5800 บาท/เดือน, เงินลงทุน 380000 บาท, คืนทุน 5.4 ปี
-  - 15 kW: Inverter: Enphase 28 เครื่อง, PV module: Sunpower P7 28 แผ่น, ประหยัดไฟฟ้า 8900 บาท/เดือน, เงินลงทุน 540000 บาท, คืนทุน 5.0 ปี
-  - 20 kW: Inverter: Enphase 38 เครื่อง, PV module: Sunpower P7 38 แผ่น, ประหยัดไฟฟ้า 12100 บาท/เดือน, เงินลงทุน 730000 บาท, คืนทุน 5.0 ปี
+  - 5 kW: Inverter: Enphase 9 เครื่อง, PV module: Sunpower P7 9 แผ่น, ประหยัดไฟฟ้า 2900 บาท/เดือน, เงินลงทุน 209000 บาท, คืนทุน 6.0 ปี
+  - 10 kW: Inverter: Enphase 18 เครื่อง, PV module: Sunpower P7 18 แผ่น, ประหยัดไฟฟ้า 5800 บาท/เดือน, เงินลงทุน 309000 บาท, คืนทุน 4.4 ปี
+  - 15 kW: Inverter: Enphase 28 เครื่อง, PV module: Sunpower P7 28 แผ่น, ประหยัดไฟฟ้า 8700 บาท/เดือน, เงินลงทุน 455000 บาท, คืนทุน 4.4 ปี
+  - 20 kW: Inverter: Enphase 38 เครื่อง, PV module: Sunpower P7 38 แผ่น, ประหยัดไฟฟ้า 11600 บาท/เดือน, เงินลงทุน 599000 บาท, คืนทุน 4.3 ปี
+  - 5 kW: Inverter: Enphase 9 เครื่อง, PV module: Jinko 8 แผ่น, ประหยัดไฟฟ้า 2900 บาท/เดือน, เงินลงทุน 199000 บาท, คืนทุน 5.7 ปี
+  - 10 kW: Inverter: Enphase 18 เครื่อง, PV module: Jinko 16 แผ่น, ประหยัดไฟฟ้า 5800 บาท/เดือน, เงินลงทุน 299000 บาท, คืนทุน 4.3 ปี
+  - 15 kW: Inverter: Enphase 28 เครื่อง, PV module: Jinko 24 แผ่น, ประหยัดไฟฟ้า 8700 บาท/เดือน, เงินลงทุน 439000 บาท, คืนทุน 4.2 ปี
+  - 20 kW: Inverter: Enphase 38 เครื่อง, PV module: Jinko 32 แผ่น, ประหยัดไฟฟ้า 11600 บาท/เดือน, เงินลงทุน 579000 บาท, คืนทุน 4.2 ปี
 
 NextE Solar PPA:
 - ดำเนินการโดย บริษัท เน็กซ์อี กรีน เอ็นเนอร์ยี่ จำกัด (บริษัทลูก)
