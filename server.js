@@ -42,6 +42,12 @@ async function getTyphoonResponse(prompt) {
   // Typhoon uses the OpenAI-compatible endpoint
   const apiUrl = "https://api.opentyphoon.ai/v1/chat/completions";
   
+  // --- คำนวณวันที่ปัจจุบันแบบไทย ---
+  const now = new Date();
+  const options = { year: 'numeric', month: 'long', day: 'numeric', locale: 'th-TH' };
+  const currentDateThai = now.toLocaleDateString('th-TH', options);
+  const currentYearThai = now.getFullYear() + 543; // แปลง ค.ศ. เป็น พ.ศ.
+  
   const nextEData = `
 บริษัท เน็กซ์อี จำกัด
 ที่ตั้ง: 1518/5 ถนนประชาราษฎร์ 1 แขวงวงศ์สว่าง เขตบางซื่อ กรุงเทพมหานคร 10800
@@ -120,6 +126,7 @@ NextE Solar PPA:
 `;
 
   const systemInstruction = `คุณคือ Mr.NextE วิศวกรไฟฟ้าชายผู้เชี่ยวชาญระบบ Solar PV ของบริษัท NextE
+  ข้อมูลเวลาปัจจุบัน: วันนี้คือวันที่ ${currentDateThai}
   ลักษณะการตอบกลับ:
   1. พูดจาสุภาพ ใช้คำแทนตัวว่า "ผม" และลงท้ายว่า "ครับ" เสมอ
   2. ตอบให้ตรงประเด็น สั้น กระชับ แบบวิศวกร
