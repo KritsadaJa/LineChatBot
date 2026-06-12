@@ -12,6 +12,15 @@ const LINE_CHANNEL_SECRET = process.env.LINE_CHANNEL_SECRET;
 const TYPHOON_API_KEY = process.env.TYPHOON_API_KEY;
 const APP_URL = process.env.APP_URL; // e.g., https://your-app.onrender.com
 
+// นำเข้า SDK ของ Gemini เข้ามาใช้งาน
+const { GoogleGenAI } = require('@google/genai');
+
+// เปลี่ยนตัวแปร Key (อย่าลืมไปเปลี่ยนใน .env หรือ Environment Variables ด้วยนะครับ)
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+
+// สร้าง Instance ของ AI Client
+const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+
 // --- Root Endpoint ---
 app.get('/', (req, res) => {
   res.status(200).send('Mr.NextE (Typhoon Edition) is Online!');
@@ -25,9 +34,9 @@ app.post('/webhook', async (req, res) => {
       const replyToken = event.replyToken;
 
       try {
-        // Updated to Typhoon
-        const typhoonResponse = await getTyphoonResponse(userMessage);
-        await replyToLine(replyToken, typhoonResponse);
+        // Updated to Gemini
+        const geminiResponse = await getGeminiResponse(userMessage);
+        await replyToLine(replyToken, geminiResponse);
       } catch (error) {
         console.error('Error:', error);
         await replyToLine(replyToken, "ขออภัยครับ ผม Mr.NextE เกิดข้อผิดพลาดทางเทคนิคเล็กน้อย โปรดลองอีกครั้งนะครับ");
@@ -37,10 +46,8 @@ app.post('/webhook', async (req, res) => {
   res.status(200).send('OK');
 });
 
-// --- Function to interact with Typhoon API ---
-async function getTyphoonResponse(prompt) {
-  // Typhoon uses the OpenAI-compatible endpoint
-  const apiUrl = "https://api.opentyphoon.ai/v1/chat/completions";
+// --- Function to interact with Gemini API ---
+async function getGeminiResponse(prompt) {
   
   // --- คำนวณวันที่ปัจจุบันแบบไทย ---
   const now = new Date();
@@ -133,28 +140,27 @@ NextE Solar PPA:
   3. ใช้ข้อมูลจากบริบทที่ให้มาเท่านั้นเกี่ยวกับสินค้าและบริการของ NextE
   4. ตอบเป็นภาษาไทยที่ถูกต้องและเป็นมืออาชีพ`;
 
-  const payload = {
-    // Model updated to the requested version
-    model: "typhoon-v2.5-30b-a3b-instruct", 
-    messages: [
-      { role: "system", content: systemInstruction + "\n\nContext Data:\n" + nextEData },
-      { role: "user", content: prompt }
-    ],
-    max_tokens: 6000, // Slightly increased for more detailed engineering answers
-    temperature: 0.4  // Lowered slightly for higher factual accuracy
-  };
+  Context Data:
+  ${nextEData}`;
 
   try {
-    const response = await axios.post(apiUrl, payload, {
-      headers: {
-        'Authorization': `Bearer ${TYPHOON_API_KEY}`,
-        'Content-Type': 'application/json'
+    // เรียกใช้งานผ่าน SDK ของ Gemini
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite', // เปลี่ยนชื่อโมเดลเป็นรุ่น 3.1 Flash Lite
+      contents: prompt, // ข้อความที่ผู้ใช้พิมพ์ส่งมา
+      config: {
+        systemInstruction: systemInstruction, // แยกคำสั่งระบบและบริบทออกมาต่างหาก
+        temperature: 0.4,
+        maxOutputTokens: 6000, // 6000 เพื่อให้เพียงพอต่อการตอบกลับไลน์
+        thinkingLevel: 'minimal'
       }
     });
 
-    return response.data.choices[0].message.content;
+    // ดึงข้อความผลลัพธ์กลับไปส่งให้ LINE
+    return response.text;
+    
   } catch (error) {
-    console.error('Typhoon API Error:', error.response ? error.response.data : error.message);
+    console.error('Gemini API Error:', error);
     throw error;
   }
 }
