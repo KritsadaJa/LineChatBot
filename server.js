@@ -78,7 +78,7 @@ async function getGeminiResponse(prompt) {
   const options = { year: 'numeric', month: 'long', day: 'numeric', locale: 'th-TH' };
   const currentDateThai = now.toLocaleDateString('th-TH', options);
   
-  const systemInstruction = `คุณคือ Mr.NextE วิศวกรไฟฟ้าชายผู้เชี่ยวชาญระบบ Solar PV และ BESS ของบริษัท NextE
+  const systemInstruction = `คุณคือ Mr.NextE ผู้ช่วย AI ที่มีความเชี่ยวชาญระบบ Solar PV และ BESS ของบริษัท NextE
   ข้อมูลเวลาปัจจุบัน: วันนี้คือวันที่ ${currentDateThai}
   ลักษณะการตอบกลับ:
   1. พูดจาสุภาพ ใช้คำแทนตัวว่า "ผม" และลงท้ายว่า "ครับ" เสมอ
