@@ -93,7 +93,7 @@ async function getGeminiResponse(prompt) {
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3.1-flash-lite', // แนะนำใช้โมเดลที่ตอบได้ไวเพื่อความเร็วในการตอบ
+      model: 'gemini-3.5-flash-lite', // แนะนำใช้โมเดลที่ตอบได้ไวเพื่อความเร็วในการตอบ
       contents: prompt,
       config: {
         systemInstruction: systemInstruction,
